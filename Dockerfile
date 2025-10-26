@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM efreidevopschina.azurecr.io/cache/library/python:3.9-slim
 
 WORKDIR /app
 
@@ -13,7 +13,11 @@ RUN apt-get update && apt-get install -y \
     g++ \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
-
+# 首先安装 PyTorch（使用CPU版本避免CUDA依赖）
+RUN pip install --no-cache-dir \
+    torch==2.0.1+cpu \
+    torchvision==0.15.2+cpu \
+    -f https://download.pytorch.org/whl/torch_stable.html
 # 复制依赖文件 - 利用Docker缓存层
 COPY requirements.txt .
 
